@@ -6,3 +6,4 @@
 |Up|docker-compose up -d|d - detached mode i.e runs behind the scenes||
 |Logs|docker-compose logs -f||When running in detached mode to see logs|
 |Down|docker-compose down|v - delete all networks, containers, etc when down||
+|Status|docker-compose ps||Shows the running containers on the config yaml|
