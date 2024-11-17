@@ -1,0 +1,59 @@
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+ 
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+ 
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+ 
+### NetBeans ###
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+ 
+### MAC Related ###
+*.DS_Store
+*.attach_pid*
+ 
+### logs ###
+logs/
+log/
+quarkus.log
+
+# virtual machine crash logs
+hs_err_pid*
+ 
+### Application ###
+bin/
+_site/
+__pycache__/
+.vscode/
+*.pyc
+*.releaseBackup
+audit-logs/
+ 
+## Python Inrterpreter For IDEA
+venv/*
+
+## Project Related
+# anywhere in the project
+*.real
+*.back
