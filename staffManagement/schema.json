@@ -1,0 +1,63 @@
+// Staff
+{
+    // identifiers
+    "id": "",
+    // readable (derived from name)
+    "key": "",
+
+    // name
+    "name": {
+        "first": "",
+        "last": "",
+        "short": "",
+        "tags": []
+    },
+
+    "birth": {
+        "day": "",
+        "month": "",
+        "year": "",
+        "location": {
+            "country": "",
+            "state": "",
+            "city": "",
+            "address": "",
+            "zipcode": ""
+        }
+    },
+
+    "citizen": "",
+
+    "gender": {
+        "legal": "",
+        "tags": []
+    },
+
+    "work": {
+        "location": {
+            "country": "",
+            "state": "",
+            "city": "",
+            "address": "",
+            "zipcode": ""
+        },
+        "vertical": "",
+        "department": "",
+        "team": "",
+        "designation" : {
+            "role": "",
+            "level": ""
+        },
+        "manager": {
+            "functional": {
+                 "id": "",
+                "key": ""
+            },
+            "admin": {
+                 "id": "",
+                "key": ""
+            }
+        },
+        "tier": "Manager, ic, Officer"
+    }
+}

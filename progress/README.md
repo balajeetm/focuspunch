@@ -7,6 +7,7 @@
 |Set up elastic and kibana 8.16 locally|17 Nov 2024|17 Nov 2024||
 |Postman Collection For Staff|17 Nov 2024||For index operations|
 |Kibana Visualizations for Staff|17 Nove 2014|||
+|Learn Elastic to Design Schema|18th Nov 2024|||
 |Insert Leader Org||||
 
 # Bugs
