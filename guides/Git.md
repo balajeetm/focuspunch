@@ -14,3 +14,4 @@
 |Show Git Config|git config --list|--local show local cnfig||
 |Update Mail|git config user.email {email}|||
 |Update GPG Signing Key|git config user.signingkey {keyId}|||
+|Git Push fails - fatal | git config --local http.postBuffer 157286400||https://confluence.atlassian.com/bitbucketserverkb/git-push-fails-fatal-the-remote-end-hung-up-unexpectedly-779171796.html|
