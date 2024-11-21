@@ -1,0 +1,592 @@
+{
+	"info": {
+		"_postman_id": "754c7ca9-4c67-4564-b455-ce37d7ce31e6",
+		"name": "ElasticSearch",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2167798"
+	},
+	"item": [
+		{
+			"name": "Meta",
+			"item": [
+				{
+					"name": "EsService",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{elasticendpoint}}",
+							"host": [
+								"{{elasticendpoint}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Health",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{elasticendpoint}}/_cat/health?v",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"_cat",
+								"health"
+							],
+							"query": [
+								{
+									"key": "v",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Nodes",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{elasticendpoint}}/_cat/nodes?v",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"_cat",
+								"nodes"
+							],
+							"query": [
+								{
+									"key": "v",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Indices",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{elasticendpoint}}/_cat/indices?v",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"_cat",
+								"indices"
+							],
+							"query": [
+								{
+									"key": "v",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get",
+			"item": [
+				{
+					"name": "GetMapping",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}/_mapping",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}",
+								"_mapping"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AddConfigure",
+			"item": [
+				{
+					"name": "CreateIndex",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"settings\" : {\n        \"index\" : {\n            \"number_of_shards\" : 3, \n            \"number_of_replicas\" : 1 \n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Mapping",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"dynamic\": true,\n    \"properties\": {\n        \"name\": {\n            \"properties\": {\n                \"first\": {\"type\": \"text\", \"fields\": {\n                    \"keyword\": {\"type\": \"keyword\", \"ignore_above\": 256}\n                }},\n                \"last\": {\"type\": \"text\", \"fielddata\": true, \"fields\": {\n                    \"keyword\": {\"type\": \"keyword\", \"ignore_above\": 256}\n                }},\n                \"short\": {\"type\": \"text\", \"fields\": {\n                    \"keyword\": {\"type\": \"keyword\", \"ignore_above\": 256}\n                }}\n            }\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}/_mapping",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}",
+								"_mapping"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddDocument",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": {\n        \"first\": \"Balajee\",\n        \"last\": \"Mohan\",\n        \"short\": \"Bala\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}/_doc",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}",
+								"_doc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "BulkDocument",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"index\" : {}}\n{\"name\":{\"first\":\"Sachin\",\"last\":\"Tendulkar\",\"short\":\"SRT\"}}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}/_bulk",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}",
+								"_bulk"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteIndex",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PointOfTime",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}/_pit?keep_alive=1m",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}",
+								"_pit"
+							],
+							"query": [
+								{
+									"key": "keep_alive",
+									"value": "1m"
+								}
+							]
+						},
+						"description": "Create a point of time (PIT) to preserve the current state of the index over searches (like search_after)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Search",
+			"item": [
+				{
+					"name": "Search Sample",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"timeout\": \"2s\", // timeout per shard\n    \"track_total_hits\": true, // you can also give a number\n    \"track_scores\": true, // To track scores even while sorting\n    \"sort\": [\n        \"_score\",\n        {\"name.last\": {\"order\": \"asc\", \"missing\": \"_last\", \"unmapped_type\": \"text\"}}\n    ],\n    \"from\": 0, //number of hits to skip\n    \"size\": 10, // size of the page\n    // \"search_after\": [0.18232156, \"tendulkar\"], // search after this item in the previous request\n    \"query\": {\n        \"match\": {\n            \"name.short\": \"srt\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}/_search",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}",
+								"_search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Playground",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"timeout\": \"2s\", // timeout per shard\n    \"track_total_hits\": true, // you can also give a number\n    \"sort\": [\n        \"_score\",\n        {\"name.last\": \"asc\"}\n    ],\n    \"query\": {\n        \"match\": {\n            \"name.short\": \"srt\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}/_search",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}",
+								"_search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "E|DerivedField",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"runtime_mappings\": {\n        \"day_of_week\": {\n            \"type\": \"keyword\",\n             \"script\": {\n                 \"source\": \"emit('0')\"\n             }\n        }\n    },\n    \"query\": {\n        \"term\": {\n            \"day_of_week\": \"0\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}/_search",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}",
+								"_search"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
