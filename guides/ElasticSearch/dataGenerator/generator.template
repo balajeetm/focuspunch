@@ -1,0 +1,13 @@
+[
+    '{{repeat(1000, 1000)}}',
+    {
+      name: '{{firstName()}} {{surname()}}',
+      age: '{{integer(18, 75)}}',
+      gender: '{{gender()}}',
+      email: '{{email()}}',
+      phone: '+1 {{phone()}}',
+      street: '{{integer(100,999)}} {{street()}}',
+      city: '{{city()}}',
+      state: '{{state()}}, {{integer(100, 10000)}}'
+    }
+  ]

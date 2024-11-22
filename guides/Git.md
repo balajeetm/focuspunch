@@ -7,6 +7,7 @@
 |Add Remote Repo|git remote add {remoteName} {originurl}|||
 |Show Remote Repos|git remote -v|||
 |Update remote url|git remote {remotename} {url}|||
+|Remove local changes to a file|git restore {filename}<br><br>git checkout -- {filename}|||
 
 ## Git Config
 | Command Label | Command | Parameters | Description |
