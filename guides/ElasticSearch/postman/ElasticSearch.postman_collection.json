@@ -366,6 +366,45 @@
 					"response": []
 				},
 				{
+					"name": "BulkFile",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "/Users/3746187/Bala/Play/Codebase/focuspunch/guides/ElasticSearch/dataGenerator/customers.json"
+							}
+						},
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}/_bulk",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}",
+								"_bulk"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "DeleteIndex",
 					"request": {
 						"auth": {
@@ -461,7 +500,7 @@
 			"name": "Search",
 			"item": [
 				{
-					"name": "Search Sample",
+					"name": "Search Sample | DONT EDIT",
 					"request": {
 						"auth": {
 							"type": "basic",
@@ -482,7 +521,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"timeout\": \"2s\", // timeout per shard\n    \"track_total_hits\": true, // you can also give a number\n    \"track_scores\": true, // To track scores even while sorting\n    \"sort\": [\n        \"_score\",\n        {\"name.last\": {\"order\": \"asc\", \"missing\": \"_last\", \"unmapped_type\": \"text\"}}\n    ],\n    \"from\": 0, //number of hits to skip\n    \"size\": 10, // size of the page\n    // \"search_after\": [0.18232156, \"tendulkar\"], // search after this item in the previous request\n    \"query\": {\n        \"match\": {\n            \"name.short\": \"srt\"\n        }\n    }\n}",
+							"raw": "{\n    \"timeout\": \"2s\", // timeout per shard\n    \"track_total_hits\": true, // you can also give a number\n    \"track_scores\": true, // To track scores even while sorting\n    // \"sort\": [\n    //     \"_score\",\n    //     {\"name.last\": {\"order\": \"asc\", \"missing\": \"_last\", \"unmapped_type\": \"text\"}}\n    // ],\n    \"from\": 0, //number of hits to skip\n    \"size\": 10, // size of the page\n    // \"search_after\": [0.18232156, \"tendulkar\"], // search after this item in the previous request\n    //\"pit\": {\"id\": \"obOXBAMEdGVzdBZoTTBLdHdOWVFUYTVtbXVXd1l4Rk1RAAEWQVpnbHpuV1BSb3lEcmJOd3NyYThrZwABAAAAAAAB6rsWUmVMWUVJdWZRVEdLMF9HSFRUdHZGUQAEdGVzdBZoTTBLdHdOWVFUYTVtbXVXd1l4Rk1RAQEWQVpnbHpuV1BSb3lEcmJOd3NyYThrZwABAAAAAAAB6rwWUmVMWUVJdWZRVEdLMF9HSFRUdHZGUQAEdGVzdBZoTTBLdHdOWVFUYTVtbXVXd1l4Rk1RAgEWQVpnbHpuV1BSb3lEcmJOd3NyYThrZwABAAAAAAAB6r0WUmVMWUVJdWZRVEdLMF9HSFRUdHZGUQABFmhNMEt0d05ZUVRhNW1tdVd3WXhGTVEAAA==\"}, // the point in time across searches\n    \"query\": {\n        \"match\": {\n            \"name.first\": \"james\"\n        }\n    },\n    // \"fields\": [\n    //     \"*\",\n    //     {\"field\": \"@timestamp\", \"format\": \"epoch_millis\"}\n    // ],\n    // \"docvalue_fields\": [\n    //     \"name.short.keyword\",\n    //     {\"field\": \"@timestamp\", \"format\": \"epoch_millis\"}\n    // ],\n    // \"stored_fields\": [], // Use \"stored_fields\": \"_none_\", to not get anything\n    // \"script_fields\": {\n    //     \"test\": {\"script\": {\"lang\": \"painless\", \"source\": \"doc['name.first.keyword'].value\"}},\n    //     \"test1\": {\"script\": {\"lang\": \"painless\", \"source\": \"field('name.invalid').get('defaultValue')\"}},\n    //     \"test2\": {\"script\": {\"lang\": \"painless\", \"source\": \"params['_source']['name']['first']\"}}\n    // },\n\n    // \"collapse\": {\n    //     \"field\": \"gender\" //The collapsing is done by selecting only the top sorted document per collapse key.\n    // },\n    // \"highlight\": {\n    //     \"fields\": {\n    //         \"street\": {} // specifies which document field to highlight the search strings on\n    //     }\n    // },\n    \"_source\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -504,6 +543,48 @@
 				},
 				{
 					"name": "Search Playground",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": {\n        \"match\":{\n            \"street\": \"road\"\n        }\n    },\n    \"collapse\": {\n        \"field\": \"gender.keyword\"\n    },\n    \"highlight\": {\n        \"fields\": {\n            \"street\": {}\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}/_search",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}",
+								"_search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Collapse",
 					"request": {
 						"auth": {
 							"type": "basic",
