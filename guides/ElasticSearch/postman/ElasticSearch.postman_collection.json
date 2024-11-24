@@ -232,6 +232,40 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "GetDocument",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}/_doc/{{docid}}",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}",
+								"_doc",
+								"{{docid}}"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -343,7 +377,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": {\n        \"first\": \"Balajee\",\n        \"last\": \"Mohan\",\n        \"short\": \"Bala\"\n    }\n}",
+							"raw": "{\n    \"name\": {\n        \"first\": \"Balajee\",\n        \"last\": \"Mohan\"\n    },\n    \"age\": 36,\n    \"gender\": \"male\",\n    \"email\": \"balajmoh@cisco.com\",\n    \"phone\": \"+1 (999) 999-7189\",\n    \"street\": \"3451 Bernbrook Lane\",\n    \"city\": \"Charlotte\",\n    \"state\": \"North Carolina, 28269\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -351,13 +385,57 @@
 							}
 						},
 						"url": {
-							"raw": "{{elasticendpoint}}/{{index}}/_doc",
+							"raw": "{{elasticendpoint}}/{{index}}/_doc/bala",
 							"host": [
 								"{{elasticendpoint}}"
 							],
 							"path": [
 								"{{index}}",
-								"_doc"
+								"_doc",
+								"bala"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateDocument",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"script\": {\n        \"source\": \"if (ctx._source.staff == null) {ctx._source.staff = [];}ctx._source.staff.add(params.add_staff);\",\n        \"params\": {\n            \"add_staff\": {\n                \"name\": {\n                    \"first\": \"Saurav\",\n                    \"last\": \"Ganguly\"\n                },\n                \"age\": 51,\n                \"gender\": \"male\",\n                \"email\": \"ganguly@india.com\",\n                \"phone\": \"+1 (801) 441-3696\",\n                \"street\": \"389 Pierrepont Place\",\n                \"city\": \"Orick\",\n                \"state\": \"Rhode Island, 9297\"\n            }\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}/_update/{{docid}}",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}",
+								"_update",
+								"{{docid}}"
 							]
 						}
 					},
@@ -823,7 +901,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"query\": {\n        \"match\":{\n            \"street\": \"road\"\n        }\n    },\n    \"collapse\": {\n        \"field\": \"gender.keyword\"\n    },\n    \"highlight\": {\n        \"fields\": {\n            \"street\": {}\n        }\n    }\n}",
+							"raw": "{\n    \"query\": {\n        \"nested\": {\n            \"path\": \"staff\",\n            \"query\": {\n                \"match\": {\"staff.name.first\": \"sachin\"}\n            }\n        }\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1464,6 +1542,394 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"query\": {\n        \"simple_query_string\": {\n            \"fields\": [\"name*\", \"street\"],\n            \"query\": \"carpenter + place\",\n            \"flags\": \"AND|OR\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}/_search",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}",
+								"_search"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "JoiningQueries",
+			"item": [
+				{
+					"name": "Nested | SAMPLE",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": {\n        \"nested\": {\n            \"path\": \"staff\", //define the nested path & you can go as deep as you want here\n            \"query\": {\n                \"match\": {\"staff.name.first\": \"sachin\"}\n            }\n        }\n    }\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}/_search",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}",
+								"_search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Nested Must NOT | SAMPLE",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": {\n        \"bool\": {\n            \"must\": {\n                \"nested\": {\n                    \"path\": \"staff\",\n                    \"query\": {\n                        \"exists\": {\"field\": \"staff\"}\n                    }\n                }\n            },\n            \"must_not\": {\n                \"nested\": {\n                    \"path\": \"staff\",\n                    \"query\": {\n                        \"match\": {\"staff.name.first\": \"kohli\"}\n                    }\n                }\n            }\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}/_search",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}",
+								"_search"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TermQueries",
+			"item": [
+				{
+					"name": "exists | SAMPLE",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": {\n        \"exists\": {\"field\": \"name.first\"}\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}/_search",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}",
+								"_search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ids | SAMPLE",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": {\n        \"ids\": {\"values\": [\"bala\"]}\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}/_search",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}",
+								"_search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "prefix | SAMPLE",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": {\n        \"prefix\": {\"name.first\": \"ba\"} // this is an expensive query unless index_prefixes is enabled for that field\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}/_search",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}",
+								"_search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "range | SAMPLE",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": {\n        \"range\": {\n            \"age\": {\"gte\": 18, \"lte\": 25}\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}/_search",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}",
+								"_search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "regexp | SAMPLE",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": {\n        \"regexp\": { // is an expensive query\n            \"name.first\": \".*ba\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}/_search",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}",
+								"_search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "term | SAMPLE",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": {\n        \"term\": {\n            \"gender.keyword\": {\n                \"value\": \"Female\",\n                \"case_insensitive\": true\n            }\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{elasticendpoint}}/{{index}}/_search",
+							"host": [
+								"{{elasticendpoint}}"
+							],
+							"path": [
+								"{{index}}",
+								"_search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "terms | SAMPLE",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{adminpass}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{adminuser}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": {\n        \"terms\": {\n            \"age\": [18, 25]\n        }\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
