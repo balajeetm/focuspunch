@@ -335,7 +335,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"dynamic\": true,\n    \"properties\": {\n        \"name\": {\n            \"properties\": {\n                \"first\": {\"type\": \"text\", \"fields\": {\n                    \"keyword\": {\"type\": \"keyword\", \"ignore_above\": 256}\n                }},\n                \"last\": {\"type\": \"text\", \"fielddata\": true, \"fields\": {\n                    \"keyword\": {\"type\": \"keyword\", \"ignore_above\": 256}\n                }},\n                \"short\": {\"type\": \"text\", \"fields\": {\n                    \"keyword\": {\"type\": \"keyword\", \"ignore_above\": 256}\n                }}\n            }\n        }\n    }\n}",
+							"raw": "{\n    \"dynamic\": true,\n    \"properties\": {\n        \"name\": {\n            \"properties\": {\n                \"first\": {\n                    \"type\": \"text\",\n                    \"fields\": {\n                        \"keyword\": {\"type\": \"keyword\",\"ignore_above\": 256}\n                    }\n                },\n                \"last\": {\n                    \"type\": \"text\",\n                    \"fielddata\": true,\n                    \"fields\": {\n                        \"keyword\": {\"type\": \"keyword\",\"ignore_above\": 256}\n                    }\n                },\n                \"short\": {\n                    \"type\": \"text\",\n                    \"fields\": {\n                        \"keyword\": {\"type\": \"keyword\",\"ignore_above\": 256}\n                    }\n                }\n            }\n        }\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -880,6 +880,908 @@
 			"name": "Search",
 			"item": [
 				{
+					"name": "CompoundQueries",
+					"item": [
+						{
+							"name": "Bool | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"query\": {\n        \"bool\": {\n            \"filter\": { // filter context to narrow documents to score\n                \"range\": {\"age\": {\"gte\":20, \"lte\": 40}}\n            },\n            \"must_not\": { // filter context to exclude documents to score \n                \"term\": {\"gender\": \"female\"}\n            },\n            \"must\": {\n                \"match\": {\"street\": \"road\"}\n            },\n            \"should\": [ // use arrays if you are using more than one clause\n                {\"match\": {\"state\": \"Carolina\"}},\n                {\"match\": {\"state\": \"California\"}}\n            ],\n            \"minimum_should_match\": 1 // Number of should clauses to match\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Boosting | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"query\": {\n        \"boosting\": {\n            \"positive\": {\n                \"match\": {\"state\": \"carolina\"}\n            },\n            \"negative\": {\n                \"term\": {\"gender\": \"female\"}\n            },\n            \"negative_boost\": 0.5 // Number between 0-1, to reduce the relevance of negative query\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ConstantScore | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"query\": {\n        \"constant_score\": {\n            \"filter\": {\n                \"term\": {\"gender\": \"male\"}\n            },\n            \"boost\": \"1.1\" // the score for all matching docs\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Disjunction | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"query\": {\n        \"dis_max\": {\n            \"queries\": [\n                {\"term\": {\"gender\": \"female\"}},\n                {\"term\": {\"age\": 25}}\n            ],\n            \"tie_breaker\": 0.7 // Number between 0-1 used to increase relevance scores of tie breakers\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "FullTextQueries",
+					"item": [
+						{
+							"name": "Intervals | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"query\": {\n        \"intervals\": {\n            \"street\": {\n                \"match\": {\n                    \"query\": \"estate road\",\n                    \"max_gaps\": 0, // positions between matching terms (estate and road) must be\n                    \"ordered\": true // whether matching terms should be found in order\n                }\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Match | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"query\": { // any full text query will analyzed\n        \"match\": {\n            \"street\": {\n                \"query\": \"road estate\", // if only query will be provided, it can be directly provided to field\n                \"operator\": \"AND\" // valid values are OR (default) and AND\n            }\n        }\n    }\n}\n\n\n// The below is what the 'AND' query expands to\n// {\n//     \"query\": { // any full text query will analyzed\n//         \"bool\": {\n//             \"must\": [\n//                 {\"term\": {\"street\": \"road\"}},\n//                 {\"term\": {\"street\": \"estate\"}}\n//             ]\n//         }\n//     }\n// }\n\n// The below is what the 'OR' query expands to\n// {\n//     \"query\": { // any full text query will analyzed\n//         \"bool\": {\n//             \"should\": [\n//                 {\"term\": {\"street\": \"road\"}},\n//                 {\"term\": {\"street\": \"estate\"}}\n//             ],\n//             \"minimum_should_match\": 1\n//         }\n//     }\n// }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "MatchBoolPrefix | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"query\": { // any full text query will analyzed\n        \"match_bool_prefix\": {\n            \"street\": {\n                \"query\": \"road estate 962\", // if only query will be provided, it can be directly provided to field\n                \"operator\": \"OR\" // valid values are OR (default) and AND\n            }\n        }\n    }\n}\n\n\n// The below is what the 'AND' query expands to\n// {\n//     \"query\": { // any full text query will analyzed\n//         \"bool\": {\n//             \"must\": [\n//                 {\"term\": {\"street\": \"road\"}},\n//                 {\"term\": {\"street\": \"estate\"}},\n//                 {\"prefix\": {\"street\": \"962\"}}\n//             ]\n//         }\n//     }\n// }\n\n// The below is what the 'OR' query expands to\n// {\n//     \"query\": { // any full text query will analyzed\n//         \"bool\": {\n//             \"should\": [\n//                 {\"term\": {\"street\": \"road\"}},\n//                 {\"term\": {\"street\": \"estate\"}},\n//                 {\"prefix\": {\"street\": \"962\"}}\n//             ],\n//             \"minimum_should_match\": 1\n//         }\n//     }\n// }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "MatchPhrase | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"query\": { // any full text query will analyzed\n        \"match_phrase\": {\n            \"street\": {\n                \"query\": \"962 road\", // if only query will be provided, it can be directly provided to field\n                \"slop\": 1\n            }\n        }\n    }\n}\n\n\n// The below is what it could be understood as. The score comes out to be different though\n// {\n//     \"query\": { // any full text query will analyzed\n//         \"intervals\": {\n//             \"street\": {\n//                 \"match\": {\n//                     \"query\": \"962 road\",\n//                     \"max_gaps\": 1,\n//                     \"ordered\": true                   \n//                 }\n//             }\n//         }\n//     }\n// }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "MatchPhrasePrefix | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"query\": { // any full text query will analyzed\n        \"match_phrase_prefix\": {\n            \"street\": {\n                \"query\": \"estate road 370\", // if only query will be provided, it can be directly provided to field\n                \"slop\": 3\n            }\n        }\n    }\n}\n\n\n// The below is what it could be understood as. The score comes out to be different though\n// {\n//     \"query\": { // any full text query will analyzed\n//         \"intervals\": {\n//             \"street\": {\n//                 \"all_of\": {\n//                     \"intervals\": [\n//                         {\"match\": {\"query\": \"estate road\", \"max_gaps\": 0}},\n//                         {\"prefix\": {\"prefix\": \"370\"}}\n//                     ]\n//                 }\n//             }\n//         }\n//     }\n// }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CombinedFields | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"query\": {\n        \"combined_fields\": {\n            \"query\": \"carpenter place\",\n            \"fields\": [\"name.first\", \"street\"],\n            \"operator\": \"and\"\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "MultiMatch | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"query\": {\n        \"multi_match\": {\n            \"query\": \"carpenter place\",\n            \"fields\": [\"name.first\", \"street\"]\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SimpleQuery | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"query\": {\n        \"simple_query_string\": {\n            \"fields\": [\"name*\", \"street\"],\n            \"query\": \"carpenter + place\",\n            \"flags\": \"AND|OR\"\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "JoiningQueries",
+					"item": [
+						{
+							"name": "Nested | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"query\": {\n        \"nested\": {\n            \"path\": \"staff\", //define the nested path & you can go as deep as you want here\n            \"query\": {\n                \"match\": {\"staff.name.first\": \"sachin\"}\n            }\n        }\n    }\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Nested Must NOT | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"query\": {\n        \"bool\": {\n            \"must\": {\n                \"nested\": {\n                    \"path\": \"staff\",\n                    \"query\": {\n                        \"exists\": {\"field\": \"staff\"}\n                    }\n                }\n            },\n            \"must_not\": {\n                \"nested\": {\n                    \"path\": \"staff\",\n                    \"query\": {\n                        \"match\": {\"staff.name.first\": \"kohli\"}\n                    }\n                }\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "TermQueries",
+					"item": [
+						{
+							"name": "exists | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"query\": {\n        \"exists\": {\"field\": \"name.first\"}\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ids | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"query\": {\n        \"ids\": {\"values\": [\"bala\"]}\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "prefix | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"query\": {\n        \"prefix\": {\"name.first\": \"ba\"} // this is an expensive query unless index_prefixes is enabled for that field\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "range | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"query\": {\n        \"range\": {\n            \"age\": {\"gte\": 18, \"lte\": 25}\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "regexp | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"query\": {\n        \"regexp\": { // is an expensive query\n            \"name.first\": \".*ba\"\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "term | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"query\": {\n        \"term\": {\n            \"gender.keyword\": {\n                \"value\": \"Female\",\n                \"case_insensitive\": true\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "terms | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"query\": {\n        \"terms\": {\n            \"age\": [18, 25]\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "Search Playground",
 					"request": {
 						"auth": {
@@ -1050,10 +1952,265 @@
 			]
 		},
 		{
-			"name": "CompoundQueries",
+			"name": "Aggs",
 			"item": [
 				{
-					"name": "Bool | SAMPLE",
+					"name": "Buckets",
+					"item": [
+						{
+							"name": "Histogram | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"ages\": {\n            \"meta\": {\n                \"traceId\": \"1234.histogram\"\n            },\n            \"histogram\": {\n                \"field\": \"age\", // the field to split the data on\n                \"interval\": \"10\", // the intervals to choose (rounding the values),\n                \"min_doc_count\": 1, // consider a histogram only if there are docs,\n                \"hard_bounds\": {\"min\": 0,\"max\": 150} // where the histogram should start and end\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "typed_keys",
+											"value": null,
+											"description": "Returns the type of aggregations",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Missing | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"ages\": {\n            \"meta\": {\n                \"traceId\": \"1234.missing\"\n            },\n            \"missing\": {\"field\": \"name.short.keyword\"}\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "typed_keys",
+											"value": null,
+											"description": "Returns the type of aggregations",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Nested | TODO",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"staff\": {\n            \"nested\": {\"path\": \"staff\"},\n            \"aggs\": {\n                \"genders\": {\n                    \"terms\": {\"field\": \"staff.gender.keyword\"}\n                }\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "typed_keys",
+											"value": null,
+											"description": "Returns the type of aggregations",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Range | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"ages\": {\n            \"range\": {\n                \"field\": \"age\", // the field to execute the range on,\n                \"keyed\": true, // buckets will be an object with keys, not array\n                \"ranges\": [\n                    {\"key\": \"kiddos\", \"to\": \"18\"},\n                    {\"key\": \"adults\", \"from\": \"19\", \"to\": \"39\"},\n                    {\"key\": \"oldies\", \"from\": \"40\"}\n                ]\n            },\n            \"aggs\": {\n                \"agestats\": {\n                    \"stats\": {\"field\": \"age\"}\n                }\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "typed_keys",
+											"value": null,
+											"description": "Returns the type of aggregations",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Terms | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"genders\": {\n            \"terms\": {\n                \"field\": \"gender.keyword\",\n                // \"include\": [\"male\"] // only include specific values. regex can also be used\n                \"exclude\": [\"male\"], // only include specific values. regex can also be used,\n                \"missing\": \"N/A\" // Define behavior for missing values\n                }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "typed_keys",
+											"value": null,
+											"description": "Returns the type of aggregations",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Aggs Playground",
 					"request": {
 						"auth": {
 							"type": "basic",
@@ -1074,7 +2231,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"query\": {\n        \"bool\": {\n            \"filter\": { // filter context to narrow documents to score\n                \"range\": {\"age\": {\"gte\":20, \"lte\": 40}}\n            },\n            \"must_not\": { // filter context to exclude documents to score \n                \"term\": {\"gender\": \"female\"}\n            },\n            \"must\": {\n                \"match\": {\"street\": \"road\"}\n            },\n            \"should\": [ // use arrays if you are using more than one clause\n                {\"match\": {\"state\": \"Carolina\"}},\n                {\"match\": {\"state\": \"California\"}}\n            ],\n            \"minimum_should_match\": 1 // Number of should clauses to match\n        }\n    }\n}",
+							"raw": "{\n    \"query\": { // Limit the scope of the aggregation through query\n\n    },\n    \"aggs\": {\n        \"genderBucket\": {\n            \"terms\": {\n                \"field\": \"gender.keyword\"\n            }\n        }\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1095,7 +2252,7 @@
 					"response": []
 				},
 				{
-					"name": "Boosting | SAMPLE",
+					"name": "Aggs | SAMPLE",
 					"request": {
 						"auth": {
 							"type": "basic",
@@ -1116,7 +2273,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"query\": {\n        \"boosting\": {\n            \"positive\": {\n                \"match\": {\"state\": \"carolina\"}\n            },\n            \"negative\": {\n                \"term\": {\"gender\": \"female\"}\n            },\n            \"negative_boost\": 0.5 // Number between 0-1, to reduce the relevance of negative query\n        }\n    }\n}",
+							"raw": "{\n    // \"queryParams\" : { // look in query params, this is only for documentation\n    //     \"typed_keys\": \"\" // returns the type of aggregations\n    // },\n    // \"query\": { // Limit the scope of the aggregation through query\n    // },\n    \"size\": \"0\", // return only the aggs, not the documents\n    \"aggs\": {\n        \"genderBucket\": {\n            \"meta\": {\"traceId\": \"1234.bucket\"},\n            \"terms\": {\"field\": \"gender.keyword\"},\n            \"aggs\": {\n                \"averageAge\": { // Sub aggregations\n                    \"avg\": {\"field\": \"age\"}\n                }\n            }\n        },\n        \"averageAge\": {\n            \"meta\": {\"traceId\": \"1234.metric\"},\n            \"avg\": {\"field\": \"age\"}\n        }\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1131,819 +2288,14 @@
 							"path": [
 								"{{index}}",
 								"_search"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "ConstantScore | SAMPLE",
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{adminpass}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{adminuser}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"query\": {\n        \"constant_score\": {\n            \"filter\": {\n                \"term\": {\"gender\": \"male\"}\n            },\n            \"boost\": \"1.1\" // the score for all matching docs\n        }\n    }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{elasticendpoint}}/{{index}}/_search",
-							"host": [
-								"{{elasticendpoint}}"
 							],
-							"path": [
-								"{{index}}",
-								"_search"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Disjunction | SAMPLE",
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
+							"query": [
 								{
-									"key": "password",
-									"value": "{{adminpass}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{adminuser}}",
-									"type": "string"
+									"key": "typed_keys",
+									"value": null,
+									"description": "Returns the type of aggregations",
+									"disabled": true
 								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"query\": {\n        \"dis_max\": {\n            \"queries\": [\n                {\"term\": {\"gender\": \"female\"}},\n                {\"term\": {\"age\": 25}}\n            ],\n            \"tie_breaker\": 0.7 // Number between 0-1 used to increase relevance scores of tie breakers\n        }\n    }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{elasticendpoint}}/{{index}}/_search",
-							"host": [
-								"{{elasticendpoint}}"
-							],
-							"path": [
-								"{{index}}",
-								"_search"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "FullTextQueries",
-			"item": [
-				{
-					"name": "Intervals | SAMPLE",
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{adminpass}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{adminuser}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"query\": {\n        \"intervals\": {\n            \"street\": {\n                \"match\": {\n                    \"query\": \"estate road\",\n                    \"max_gaps\": 0, // positions between matching terms (estate and road) must be\n                    \"ordered\": true // whether matching terms should be found in order\n                }\n            }\n        }\n    }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{elasticendpoint}}/{{index}}/_search",
-							"host": [
-								"{{elasticendpoint}}"
-							],
-							"path": [
-								"{{index}}",
-								"_search"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Match | SAMPLE",
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{adminpass}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{adminuser}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"query\": { // any full text query will analyzed\n        \"match\": {\n            \"street\": {\n                \"query\": \"road estate\", // if only query will be provided, it can be directly provided to field\n                \"operator\": \"AND\" // valid values are OR (default) and AND\n            }\n        }\n    }\n}\n\n\n// The below is what the 'AND' query expands to\n// {\n//     \"query\": { // any full text query will analyzed\n//         \"bool\": {\n//             \"must\": [\n//                 {\"term\": {\"street\": \"road\"}},\n//                 {\"term\": {\"street\": \"estate\"}}\n//             ]\n//         }\n//     }\n// }\n\n// The below is what the 'OR' query expands to\n// {\n//     \"query\": { // any full text query will analyzed\n//         \"bool\": {\n//             \"should\": [\n//                 {\"term\": {\"street\": \"road\"}},\n//                 {\"term\": {\"street\": \"estate\"}}\n//             ],\n//             \"minimum_should_match\": 1\n//         }\n//     }\n// }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{elasticendpoint}}/{{index}}/_search",
-							"host": [
-								"{{elasticendpoint}}"
-							],
-							"path": [
-								"{{index}}",
-								"_search"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "MatchBoolPrefix | SAMPLE",
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{adminpass}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{adminuser}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"query\": { // any full text query will analyzed\n        \"match_bool_prefix\": {\n            \"street\": {\n                \"query\": \"road estate 962\", // if only query will be provided, it can be directly provided to field\n                \"operator\": \"OR\" // valid values are OR (default) and AND\n            }\n        }\n    }\n}\n\n\n// The below is what the 'AND' query expands to\n// {\n//     \"query\": { // any full text query will analyzed\n//         \"bool\": {\n//             \"must\": [\n//                 {\"term\": {\"street\": \"road\"}},\n//                 {\"term\": {\"street\": \"estate\"}},\n//                 {\"prefix\": {\"street\": \"962\"}}\n//             ]\n//         }\n//     }\n// }\n\n// The below is what the 'OR' query expands to\n// {\n//     \"query\": { // any full text query will analyzed\n//         \"bool\": {\n//             \"should\": [\n//                 {\"term\": {\"street\": \"road\"}},\n//                 {\"term\": {\"street\": \"estate\"}},\n//                 {\"prefix\": {\"street\": \"962\"}}\n//             ],\n//             \"minimum_should_match\": 1\n//         }\n//     }\n// }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{elasticendpoint}}/{{index}}/_search",
-							"host": [
-								"{{elasticendpoint}}"
-							],
-							"path": [
-								"{{index}}",
-								"_search"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "MatchPhrase | SAMPLE",
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{adminpass}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{adminuser}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"query\": { // any full text query will analyzed\n        \"match_phrase\": {\n            \"street\": {\n                \"query\": \"962 road\", // if only query will be provided, it can be directly provided to field\n                \"slop\": 1\n            }\n        }\n    }\n}\n\n\n// The below is what it could be understood as. The score comes out to be different though\n// {\n//     \"query\": { // any full text query will analyzed\n//         \"intervals\": {\n//             \"street\": {\n//                 \"match\": {\n//                     \"query\": \"962 road\",\n//                     \"max_gaps\": 1,\n//                     \"ordered\": true                   \n//                 }\n//             }\n//         }\n//     }\n// }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{elasticendpoint}}/{{index}}/_search",
-							"host": [
-								"{{elasticendpoint}}"
-							],
-							"path": [
-								"{{index}}",
-								"_search"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "MatchPhrasePrefix | SAMPLE",
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{adminpass}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{adminuser}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"query\": { // any full text query will analyzed\n        \"match_phrase_prefix\": {\n            \"street\": {\n                \"query\": \"estate road 370\", // if only query will be provided, it can be directly provided to field\n                \"slop\": 3\n            }\n        }\n    }\n}\n\n\n// The below is what it could be understood as. The score comes out to be different though\n// {\n//     \"query\": { // any full text query will analyzed\n//         \"intervals\": {\n//             \"street\": {\n//                 \"all_of\": {\n//                     \"intervals\": [\n//                         {\"match\": {\"query\": \"estate road\", \"max_gaps\": 0}},\n//                         {\"prefix\": {\"prefix\": \"370\"}}\n//                     ]\n//                 }\n//             }\n//         }\n//     }\n// }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{elasticendpoint}}/{{index}}/_search",
-							"host": [
-								"{{elasticendpoint}}"
-							],
-							"path": [
-								"{{index}}",
-								"_search"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "CombinedFields | SAMPLE",
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{adminpass}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{adminuser}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"query\": {\n        \"combined_fields\": {\n            \"query\": \"carpenter place\",\n            \"fields\": [\"name.first\", \"street\"],\n            \"operator\": \"and\"\n        }\n    }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{elasticendpoint}}/{{index}}/_search",
-							"host": [
-								"{{elasticendpoint}}"
-							],
-							"path": [
-								"{{index}}",
-								"_search"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "MultiMatch | SAMPLE",
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{adminpass}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{adminuser}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"query\": {\n        \"multi_match\": {\n            \"query\": \"carpenter place\",\n            \"fields\": [\"name.first\", \"street\"]\n        }\n    }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{elasticendpoint}}/{{index}}/_search",
-							"host": [
-								"{{elasticendpoint}}"
-							],
-							"path": [
-								"{{index}}",
-								"_search"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "SimpleQuery | SAMPLE",
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{adminpass}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{adminuser}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"query\": {\n        \"simple_query_string\": {\n            \"fields\": [\"name*\", \"street\"],\n            \"query\": \"carpenter + place\",\n            \"flags\": \"AND|OR\"\n        }\n    }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{elasticendpoint}}/{{index}}/_search",
-							"host": [
-								"{{elasticendpoint}}"
-							],
-							"path": [
-								"{{index}}",
-								"_search"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "JoiningQueries",
-			"item": [
-				{
-					"name": "Nested | SAMPLE",
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{adminpass}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{adminuser}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"query\": {\n        \"nested\": {\n            \"path\": \"staff\", //define the nested path & you can go as deep as you want here\n            \"query\": {\n                \"match\": {\"staff.name.first\": \"sachin\"}\n            }\n        }\n    }\n}\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{elasticendpoint}}/{{index}}/_search",
-							"host": [
-								"{{elasticendpoint}}"
-							],
-							"path": [
-								"{{index}}",
-								"_search"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Nested Must NOT | SAMPLE",
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{adminpass}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{adminuser}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"query\": {\n        \"bool\": {\n            \"must\": {\n                \"nested\": {\n                    \"path\": \"staff\",\n                    \"query\": {\n                        \"exists\": {\"field\": \"staff\"}\n                    }\n                }\n            },\n            \"must_not\": {\n                \"nested\": {\n                    \"path\": \"staff\",\n                    \"query\": {\n                        \"match\": {\"staff.name.first\": \"kohli\"}\n                    }\n                }\n            }\n        }\n    }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{elasticendpoint}}/{{index}}/_search",
-							"host": [
-								"{{elasticendpoint}}"
-							],
-							"path": [
-								"{{index}}",
-								"_search"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "TermQueries",
-			"item": [
-				{
-					"name": "exists | SAMPLE",
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{adminpass}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{adminuser}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"query\": {\n        \"exists\": {\"field\": \"name.first\"}\n    }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{elasticendpoint}}/{{index}}/_search",
-							"host": [
-								"{{elasticendpoint}}"
-							],
-							"path": [
-								"{{index}}",
-								"_search"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "ids | SAMPLE",
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{adminpass}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{adminuser}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"query\": {\n        \"ids\": {\"values\": [\"bala\"]}\n    }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{elasticendpoint}}/{{index}}/_search",
-							"host": [
-								"{{elasticendpoint}}"
-							],
-							"path": [
-								"{{index}}",
-								"_search"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "prefix | SAMPLE",
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{adminpass}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{adminuser}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"query\": {\n        \"prefix\": {\"name.first\": \"ba\"} // this is an expensive query unless index_prefixes is enabled for that field\n    }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{elasticendpoint}}/{{index}}/_search",
-							"host": [
-								"{{elasticendpoint}}"
-							],
-							"path": [
-								"{{index}}",
-								"_search"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "range | SAMPLE",
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{adminpass}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{adminuser}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"query\": {\n        \"range\": {\n            \"age\": {\"gte\": 18, \"lte\": 25}\n        }\n    }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{elasticendpoint}}/{{index}}/_search",
-							"host": [
-								"{{elasticendpoint}}"
-							],
-							"path": [
-								"{{index}}",
-								"_search"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "regexp | SAMPLE",
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{adminpass}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{adminuser}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"query\": {\n        \"regexp\": { // is an expensive query\n            \"name.first\": \".*ba\"\n        }\n    }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{elasticendpoint}}/{{index}}/_search",
-							"host": [
-								"{{elasticendpoint}}"
-							],
-							"path": [
-								"{{index}}",
-								"_search"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "term | SAMPLE",
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{adminpass}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{adminuser}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"query\": {\n        \"term\": {\n            \"gender.keyword\": {\n                \"value\": \"Female\",\n                \"case_insensitive\": true\n            }\n        }\n    }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{elasticendpoint}}/{{index}}/_search",
-							"host": [
-								"{{elasticendpoint}}"
-							],
-							"path": [
-								"{{index}}",
-								"_search"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "terms | SAMPLE",
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "password",
-									"value": "{{adminpass}}",
-									"type": "string"
-								},
-								{
-									"key": "username",
-									"value": "{{adminuser}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"query\": {\n        \"terms\": {\n            \"age\": [18, 25]\n        }\n    }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{elasticendpoint}}/{{index}}/_search",
-							"host": [
-								"{{elasticendpoint}}"
-							],
-							"path": [
-								"{{index}}",
-								"_search"
 							]
 						}
 					},
