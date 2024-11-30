@@ -1979,7 +1979,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"ages\": {\n            \"meta\": {\n                \"traceId\": \"1234.histogram\"\n            },\n            \"histogram\": {\n                \"field\": \"age\", // the field to split the data on\n                \"interval\": \"10\", // the intervals to choose (rounding the values),\n                \"min_doc_count\": 1, // consider a histogram only if there are docs,\n                \"hard_bounds\": {\"min\": 0,\"max\": 150} // where the histogram should start and end\n            }\n        }\n    }\n}",
+									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"ages\": {\n            \"meta\": {\n                \"traceId\": \"trace.histogram\"\n            },\n            \"histogram\": {\n                \"field\": \"age\", // the field to split the data on\n                \"interval\": \"10\", // the intervals to choose (rounding the values),\n                \"min_doc_count\": 1, // consider a histogram only if there are docs,\n                \"hard_bounds\": {\"min\": 0,\"max\": 150} // where the histogram should start and end\n            }\n        }\n    }\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2029,7 +2029,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"ages\": {\n            \"meta\": {\n                \"traceId\": \"1234.missing\"\n            },\n            \"missing\": {\"field\": \"name.short.keyword\"}\n        }\n    }\n}",
+									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"ages\": {\n            \"meta\": {\n                \"traceId\": \"trace.missing\"\n            },\n            \"missing\": {\"field\": \"name.short.keyword\"}\n        }\n    }\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2079,7 +2079,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"staff\": {\n            \"nested\": {\"path\": \"staff\"},\n            \"aggs\": {\n                \"genders\": {\n                    \"terms\": {\"field\": \"staff.gender.keyword\"}\n                }\n            }\n        }\n    }\n}",
+									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"staff\": {\n            \"meta\": {\n                \"traceId\": \"trace.nested\"\n            },\n            \"nested\": {\"path\": \"staff\"},\n            \"aggs\": {\n                \"genders\": {\n                    \"meta\": {\n                        \"traceId\": \"trace.inner\"\n                    },\n                    \"terms\": {\"field\": \"staff.gender.keyword\"}\n                }\n            }\n        }\n    }\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2129,7 +2129,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"ages\": {\n            \"range\": {\n                \"field\": \"age\", // the field to execute the range on,\n                \"keyed\": true, // buckets will be an object with keys, not array\n                \"ranges\": [\n                    {\"key\": \"kiddos\", \"to\": \"18\"},\n                    {\"key\": \"adults\", \"from\": \"19\", \"to\": \"39\"},\n                    {\"key\": \"oldies\", \"from\": \"40\"}\n                ]\n            },\n            \"aggs\": {\n                \"agestats\": {\n                    \"stats\": {\"field\": \"age\"}\n                }\n            }\n        }\n    }\n}",
+									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"ages\": {\n            \"meta\": {\n                \"traceId\": \"trace.range\"\n            },\n            \"range\": {\n                \"field\": \"age\", // the field to execute the range on,\n                \"keyed\": true, // buckets will be an object with keys, not array\n                \"ranges\": [\n                    {\"key\": \"kiddos\", \"to\": \"18\"},\n                    {\"key\": \"adults\", \"from\": \"19\", \"to\": \"39\"},\n                    {\"key\": \"oldies\", \"from\": \"40\"}\n                ]\n            },\n            \"aggs\": {\n                \"agestats\": {\n                    \"stats\": {\"field\": \"age\"}\n                }\n            }\n        }\n    }\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2179,7 +2179,612 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"genders\": {\n            \"terms\": {\n                \"field\": \"gender.keyword\",\n                // \"include\": [\"male\"] // only include specific values. regex can also be used\n                \"exclude\": [\"male\"], // only include specific values. regex can also be used,\n                \"missing\": \"N/A\" // Define behavior for missing values\n                }\n        }\n    }\n}",
+									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"genders\": {\n            \"meta\": {\n                \"traceId\": \"trace.terms\"\n            },\n            \"terms\": {\n                \"field\": \"gender.keyword\",\n                // \"include\": [\"male\"] // only include specific values. regex can also be used\n                \"exclude\": [\"male\"], // only include specific values. regex can also be used,\n                \"missing\": \"N/A\" // Define behavior for missing values\n                }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "typed_keys",
+											"value": null,
+											"description": "Returns the type of aggregations",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Metrics",
+					"item": [
+						{
+							"name": "Avg | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"average\": {\n            \"meta\": {\n                \"traceId\": \"trace.avg\"\n            },\n            \"avg\": {\n                \"field\": \"age\",\n                \"missing\": 100 // value for missing field\n                }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "typed_keys",
+											"value": null,
+											"description": "Returns the type of aggregations",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Boxplot | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"box\": {\n            \"meta\": {\n                \"traceId\": \"trace.boxplot\"\n            },\n            \"boxplot\": {\n                \"field\": \"age\",\n                \"missing\": 100 // How to handle missing values\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "typed_keys",
+											"value": null,
+											"description": "Returns the type of aggregations",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Cardinality | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"cardinals\": {\n            \"meta\": {\n                \"traceId\": \"trace.cardinal\"\n            },\n            \"cardinality\": {\n                \"field\": \"age\"\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "typed_keys",
+											"value": null,
+											"description": "Returns the type of aggregations",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ExtendedStats | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"stats\": {\n            \"meta\": {\n                \"traceId\": \"trace.estats\"\n            },\n            \"extended_stats\": {\n                \"field\": \"age\"\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "typed_keys",
+											"value": null,
+											"description": "Returns the type of aggregations",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Max | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"maximum\": {\n            \"meta\": {\n                \"traceId\": \"trace.max\"\n            },\n            \"max\": {\n                \"field\": \"age\",\n                \"missing\": 100 // How to handle missing values\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "typed_keys",
+											"value": null,
+											"description": "Returns the type of aggregations",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Min | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"minimum\": {\n            \"meta\": {\n                \"traceId\": \"trace.min\"\n            },\n            \"min\": {\n                \"field\": \"age\",\n                \"missing\": 100 // How to handle missing values\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "typed_keys",
+											"value": null,
+											"description": "Returns the type of aggregations",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "MedDev | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"medDev\": {\n            \"meta\": {\n                \"traceId\": \"trace.meddev\"\n            },\n            \"median_absolute_deviation\": {\n                \"field\": \"age\",\n                \"missing\": 100 // How to handle missing values\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "typed_keys",
+											"value": null,
+											"description": "Returns the type of aggregations",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PercentileRanks | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"percentile\": {\n            \"meta\": {\n                \"traceId\": \"trace.percentile\"\n            },\n            \"percentile_ranks\": {\n                \"field\": \"age\",\n                \"values\": [60, 35],\n                \"keyed\": false\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "typed_keys",
+											"value": null,
+											"description": "Returns the type of aggregations",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Percentiles | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"percentile\": {\n            \"meta\": {\n                \"traceId\": \"trace.percentile\"\n            },\n            \"percentiles\": {\n                \"field\": \"age\",\n                \"percents\": [90, 95, 99, 99.9], // the different percentiles to monitor\n                // \"keyed\": false,\n                \"missing\": 100\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "typed_keys",
+											"value": null,
+											"description": "Returns the type of aggregations",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Stats | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"stats\": {\n            \"meta\": {\n                \"traceId\": \"trace.stats\"\n            },\n            \"stats\": {\n                \"field\": \"age\",\n                // \"keyed\": false,\n                \"missing\": 100\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "typed_keys",
+											"value": null,
+											"description": "Returns the type of aggregations",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "StringStats | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"stats\": {\n            \"meta\": {\n                \"traceId\": \"trace.stats\"\n            },\n            \"string_stats\": {\n                \"field\": \"gender.keyword\",\n                \"show_distribution\": true // shows character distribution\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{elasticendpoint}}/{{index}}/_search",
+									"host": [
+										"{{elasticendpoint}}"
+									],
+									"path": [
+										"{{index}}",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "typed_keys",
+											"value": null,
+											"description": "Returns the type of aggregations",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sum | SAMPLE",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "{{adminpass}}",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "{{adminuser}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": \"0\",\n    \"aggs\": {\n        \"sum\": {\n            \"meta\": {\n                \"traceId\": \"trace.sum\"\n            },\n            \"sum\": {\n                \"field\": \"age\"\n            }\n        }\n    }\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2231,7 +2836,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"query\": { // Limit the scope of the aggregation through query\n\n    },\n    \"aggs\": {\n        \"genderBucket\": {\n            \"terms\": {\n                \"field\": \"gender.keyword\"\n            }\n        }\n    }\n}",
+							"raw": "{\n    // \"query\": { // Limit the scope of the aggregation through query\n\n    // },\n    \"size\": 0,\n    \"aggs\": {\n        \"genderBucket\": {\n            \"value_count\": {\n                \"field\": \"gender.keyword\"\n            }\n        }\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
