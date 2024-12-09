@@ -1,0 +1,86 @@
+// Tesla Schema
+
+// Vehicle
+
+{
+    "vehicleId": "string",               // Unique identifier for the vehicle (e.g., combination of make & model or uuid)
+    "make": "string",                    // Make of the vehicle (e.g., Tesla, Nissan)
+    "model": "string",                   // Model of the vehicle (e.g., Model 3, Leaf)
+    "year": "integer",                   // Manufacturing year of the vehicle
+    "type": "string",                    // Type of vehicle, e.g., electric, petrol, hybrid
+    "electricSpecs": {
+        "batteryCapacity": "float",      // Capacity of the battery in kilowatt-hours (kWh)
+        "motor": "string"                // Type of motor (e.g., RWD, AWD)
+    },
+    "name": "Uriel",                     // Name of the vehicle (user-defined)
+    "nickname": "Yuri",                  // Optional nickname for the vehicle
+    "selfDriveSpecs": {                  // Specs for self-driving features (if applicable)
+        // Additional self-driving specs can be added here
+        "type": "string"          // Type of self-driving feature (if applicable)
+    },
+    "specs": {
+        "interior": {
+            "texture": "string",         // Material texture (e.g., leather, fabric)
+            "color": "string"            // Color of the interior (e.g., black, beige)
+        },
+        "exterior": {
+            "color": "string",          // Color of the vehicle exterior (e.g., Red PPMR)
+            "wheels": {
+                "type": "string",       // Type of wheels (e.g., Aero, Sport)
+                "size": "integer"       // Size of wheels in inches (e.g., 18)
+            }
+        }
+    },
+    "purchaseDate": "string",             // Date of purchase
+    "miles": "integer",                  // Current mileage of the vehicle
+    "warranty": {
+        "basic": {
+            "date": "string",           // Warranty expiration date for basic coverage
+            "miles": "integer"          // Warranty mileage limit for basic coverage
+        },
+        "battery": {
+            "date": "string",           // Warranty expiration date for the battery
+            "miles": "integer"          // Warranty mileage limit for the battery
+        },
+        "driveUnit": {
+            "date": "string",           // Warranty expiration date for the drive unit
+            "miles": "integer"          // Warranty mileage limit for the drive unit
+        }
+    },
+    "vin": "string",                     // Vehicle Identification Number (VIN)
+    "ownerId": "string",                 // ID of the owner (reference to people)
+    "registrationNumber": "string",      // Vehicle registration number
+    "softwareVersion": "string"          // Current software version of the vehicle
+}
+
+
+
+
+
+
+// Charge Event
+  {
+    "eventId": "string",               // Unique identifier for the charge event
+    "eventName": "chargeEvent",
+    "vehicleId": "string",            // The vehicle associated with the charge
+    "startTime": "string",            // Timestamp when charging started
+    "endTime": "string",              // Timestamp when charging ended
+    "energyConsumed": "float",    // Energy consumed during charging in kWh
+    "chargeDuration": "integer", // Duration of the charge in minutes
+    "locationId": "string",   // ID of the charging station
+    "cost": "float"           // Cost of the charging event
+  }
+
+
+
+  // Vehicle
+  // User
+  // Charging Station
+
+  // Charge Event -> ValueObject
+  // Expense Event
+
+  // Tabular
+
+  
+  
