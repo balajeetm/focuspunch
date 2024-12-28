@@ -57,3 +57,4 @@ venv/*
 # anywhere in the project
 *.real
 *.back
+**/*.env
